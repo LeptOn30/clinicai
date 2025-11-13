@@ -45,6 +45,13 @@ pom.xml.versionsBackup
 release.properties
 dependency-reduced-pom.xml
 hs_err_pid*
+.fttemplates/
+diagrams/
+
+*.docx
+*.md
+*.pdf
+
 
 # Node.js / Frontend
 node_modules/
