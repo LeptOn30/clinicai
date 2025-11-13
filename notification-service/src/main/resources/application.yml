@@ -1,0 +1,27 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: local # Activates the 'local' profile by default, so LoggingNotificationSender is used.
+
+  # --- Kafka Consumer Configuration ---
+  kafka:
+    bootstrap-servers: localhost:29092
+    consumer:
+      group-id: notification_service
+      # The following properties are needed for the JsonDeserializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties.spring.json.trusted.packages: "*"
+
+  # --- Email Sender Configuration (for a real SMTP server) ---
+  mail:
+    host: smtp.mailtrap.io # Example using Mailtrap for testing
+    port: 2525
+    username: your-mailtrap-username
+    password: your-mailtrap-password
+    properties.mail.smtp.auth: true
+    properties.mail.smtp.starttls.enable: true

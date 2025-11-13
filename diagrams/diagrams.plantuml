@@ -1,0 +1,159 @@
+@startuml
+title Sequence Diagram: Complete Appointment Flow
+
+actor Staff
+participant Frontend
+participant Gateway
+participant SchedulingService
+queue Kafka
+participant BillingService
+participant NotificationService
+
+Staff -> Frontend: Clicks "Complete Appointment"
+activate Frontend
+
+Frontend -> Gateway: POST /api/v1/appointments/{id}/complete
+activate Gateway
+
+Gateway -> SchedulingService: Forward request
+activate SchedulingService
+
+SchedulingService -> SchedulingService: Process business logic
+SchedulingService -> Kafka: Publish(AppointmentCompletedEvent)
+SchedulingService --> Gateway: 200 OK
+deactivate SchedulingService
+
+Gateway --> Frontend: 200 OK
+deactivate Gateway
+
+Frontend --> Staff: Show "Appointment Completed"
+deactivate Frontend
+
+par
+    Kafka -> BillingService: Consume(AppointmentCompletedEvent)
+    activate BillingService
+    BillingService -> BillingService: CreateInvoiceUseCase
+    BillingService --> Kafka: Commit offset
+    deactivate BillingService
+else
+    Kafka -> NotificationService: Consume(AppointmentCompletedEvent)
+    activate NotificationService
+    NotificationService -> NotificationService: SendConfirmationUseCase
+    NotificationService --> Kafka: Commit offset
+    deactivate NotificationService
+end
+
+@enduml
+
+@startuml
+title Hexagonal Architecture (Identity Service)
+
+!theme vibrant
+
+package "Application Core (Hexagon)" {
+    [IdentityService] as Core
+    
+    interface "RegisterUserUseCase, LoginUseCase" as InboundPort
+    interface "UserRepository" as OutboundPortRepo
+    interface "TokenGenerator" as OutboundPortToken
+}
+
+package "Infrastructure (Adapters)" {
+    [AuthController] as WebAdapter
+    [JpaUserRepository] as PersistenceAdapter
+    [JwtTokenGenerator] as SecurityAdapter
+}
+
+WebAdapter -up-|> InboundPort : implements
+InboundPort -right-> Core : calls
+
+Core -down-|> OutboundPortRepo : depends on
+Core -down-|> OutboundPortToken : depends on
+
+PersistenceAdapter -up-|> OutboundPortRepo : implements
+SecurityAdapter -up-|> OutboundPortToken : implements
+
+@enduml
+
+@startuml
+title Hexagonal Architecture (Identity Service)
+
+!theme vibrant
+
+package "Application Core (Hexagon)" {
+    [IdentityService] as Core
+    
+    interface "RegisterUserUseCase, LoginUseCase" as InboundPort
+    interface "UserRepository" as OutboundPortRepo
+    interface "TokenGenerator" as OutboundPortToken
+}
+
+package "Infrastructure (Adapters)" {
+    [AuthController] as WebAdapter
+    [JpaUserRepository] as PersistenceAdapter
+    [JwtTokenGenerator] as SecurityAdapter
+}
+
+WebAdapter -up-|> InboundPort : implements
+InboundPort -right-( Core : calls
+
+Core .down.> OutboundPortRepo : depends on
+Core .down.> OutboundPortToken : depends on
+
+PersistenceAdapter .up.|- OutboundPortRepo : implements
+SecurityAdapter .up.|- OutboundPortToken : implements
+
+@enduml
+
+@startuml
+title Bounded Context Map
+
+!theme vibrant
+
+package "External" {
+    [Frontend App] as Frontend
+}
+
+package "API Gateway (ACL)" <<Gateway>> {
+    [Gateway]
+}
+
+package "Message Broker" <<Queue>> {
+    [Apache Kafka] as Kafka
+}
+
+package "Bounded Contexts" {
+    component "Identity & Access" as Identity
+    component "Patient Management" as Patient
+    component "Scheduling" as Scheduling
+    component "Billing" as Billing
+    component "Notification" as Notification
+}
+
+Frontend -> Gateway : "REST API via ACL"
+
+Gateway --> Identity : "U/D"
+Gateway --> Patient : "U/D"
+Gateway --> Scheduling : "U/D"
+Gateway --> Billing : "U/D"
+
+Scheduling -> Kafka : "Publishes 'AppointmentCompletedEvent' (U)"
+Kafka -> Billing : "Subscribes to events (D)"
+Kafka -> Notification : "Subscribes to events (D)"
+
+@enduml
+
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title System Context Diagram for ClinicAI
+
+Person(admin, "Clinic Administrator", "Manages users, patients, and system settings.")
+Person(staff, "Clinic Staff", "Manages appointments, billing, and patient interactions.")
+
+System(clinicAiSystem, "ClinicAI System", "The complete clinic administration software suite, including all microservices and the frontend.")
+
+Rel(admin, clinicAiSystem, "Uses the system to perform administrative tasks")
+Rel(staff, clinicAiSystem, "Uses the system to manage daily clinic operations")
+
+@enduml

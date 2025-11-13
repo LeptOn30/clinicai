@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  # ------------------ Database Infrastructure ------------------
+  postgres-db:
+    image: postgres:14-alpine
+    container_name: clinic-postgres-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init-multiple-databases.sh:/docker-entrypoint-initdb.d/init-multiple-databases.sh
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=clinic_main_db # Default DB, script will create others
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d clinic_main_db" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ------------------ Messaging Infrastructure ------------------
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    container_name: clinic-zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.0
+    container_name: clinic-kafka
+    depends_on:
+      - zookeeper
+    ports:
+      # Exposes Kafka to the host machine for your Spring Boot apps
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:2181'
+      # Listeners for internal (Docker network) and external (host) connections
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+
+volumes:
+  postgres_data:
+    driver: local
