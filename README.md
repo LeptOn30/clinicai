@@ -504,4 +504,5 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 A Postman collection (`api-test-collection.json`) is included in the root of the project to test the API endpoints. Import it into Postman and set the `{{baseUrl}}` variable to `http://localhost:8080`.
 
+
 ```
