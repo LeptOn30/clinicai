@@ -1,0 +1,30 @@
+<a routerLink="/dashboard">Back to Dashboard</a>
+<h2>Register New Patient</h2>
+
+<form [formGroup]="patientForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label>First Name:</label>
+    <input type="text" formControlName="firstName">
+  </div>
+  <div>
+    <label>Last Name:</label>
+    <input type="text" formControlName="lastName">
+  </div>
+  <div>
+    <label>Date of Birth:</label>
+    <input type="date" formControlName="dateOfBirth">
+  </div>
+  <div>
+    <label>Email:</label>
+    <input type="email" formControlName="email">
+  </div>
+  <div>
+    <label>Phone Number:</label>
+    <input type="tel" formControlName="phoneNumber">
+  </div>
+  <button type="submit" [disabled]="patientForm.invalid">Register Patient</button>
+</form>
+
+<p *ngIf="message" [ngClass]="{'error-message': isError, 'success-message': !isError}">
+  {{ message }}
+</p>
