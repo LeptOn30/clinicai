@@ -13,10 +13,6 @@ public class Patient {
     private ContactInfo contactInfo;
     private Address address;
 
-    private Patient() {
-        // Private constructor for persistence mapping
-    }
-
     public static Patient register(
             PatientId id,
             String firstName,

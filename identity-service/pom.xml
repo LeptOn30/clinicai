@@ -10,14 +10,13 @@
     </parent>
 
     <artifactId>identity-service</artifactId>
-    <name>Identity & Access Service</name>
+    <name>Identity &#38; Access Service</name>
     <description>Microservice for user authentication and authorization.</description>
 
     <properties>
         <java.version>17</java.version>
         <jjwt.version>0.12.3</jjwt.version>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

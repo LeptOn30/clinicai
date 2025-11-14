@@ -57,3 +57,7 @@ diagrams/
 node_modules/
 build/
 .pnp.*
+
+# Angular
+dist/
+.angular/

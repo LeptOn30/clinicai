@@ -203,275 +203,54 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 A Postman collection (`api-test-collection.json`) is included in the root of the project to test the API endpoints. Import it into Postman and set the `{{baseUrl}}` variable to `http://localhost:8080`.
 
-## Project Structure
+# Project Structure
+
+This document provides a high-level overview of the entire project structure, explaining the role of each top-level directory and key file.
 
 ```
-clinicai
-├─ billing-service
-│  ├─ pom.xml
-│  ├─ source
-│  │  └─ main
-│  │     └─ java
-│  │        ├─ com
-│  │        │  └─ dgw
-│  │        │     └─ clinicai
-│  │        │        ├─ BillingApplication.java
-│  │        │        └─ billing
-│  │        │           ├─ application
-│  │        │           │  ├─ port
-│  │        │           │  │  ├─ in
-│  │        │           │  │  │  ├─ CreateInvoiceCommand.java
-│  │        │           │  │  │  └─ CreateInvoiceUseCase.java
-│  │        │           │  │  └─ out
-│  │        │           │  │     └─ InvoiceRepository.java
-│  │        │           │  └─ service
-│  │        │           │     └─ InvoiceService.java
-│  │        │           ├─ domain
-│  │        │           │  └─ model
-│  │        │           │     ├─ Invoice.java
-│  │        │           │     ├─ InvoiceId.java
-│  │        │           │     ├─ InvoiceStatus.java
-│  │        │           │     ├─ LineItem.java
-│  │        │           │     └─ Money.java
-│  │        │           └─ infrastructure
-│  │        │              ├─ adapter
-│  │        │              │  ├─ in
-│  │        │              │  │  └─ messaging
-│  │        │              │  │     ├─ AppointmentEventListener.java
-│  │        │              │  │     ├─ SchedulingEventTranslator.java
-│  │        │              │  │     └─ dto
-│  │        │              │  │        └─ AppointmentCompletedEvent.java
-│  │        │              │  └─ out
-│  │        │              │     └─ persistence
-│  │        │              │        ├─ JpaInvoiceRepository.java
-│  │        │              │        ├─ SpringInvoiceRepository.java
-│  │        │              │        ├─ entity
-│  │        │              │        │  └─ InvoiceEntity.java
-│  │        │              │        └─ mapper
-│  │        │              │           └─ InvoiceMapper.java
-│  │        │              └─ config
-│  │        │                 └─ KafkaConsumerConfig.java
-│  │        └─ resources
-│  │           └─ application.yml
-│  └─ target
-├─ api-gateway
-│  ├─ pom.xml
-│  ├─ source
-│  │  └─ main
-│  │     └─ java
-│  │        ├─ com
-│  │        │  └─ dgw
-│  │        │     └─ clinicai
-│  │        │        ├─ GatewayApplication.java
-│  │        │        └─ gateway
-│  │        │           ├─ filter
-│  │        │           │  ├─ MonAuthorizationFilterFactoryey.java
-│  │        │           │  └─ JwtAuthenticationFilter.java
-│  │        │           └─ util
-│  │        │              └─ JwtUtil.java
-│  │        └─ resources
-│  │           └─ application.yml
-│  └─ target
-├─ identity-service
-│  ├─ pom.xml
-│  ├─ source
-│  │  └─ main
-│  │     └─ java
-│  │        ├─ com
-│  │        │  └─ dgw
-│  │        │     └─ clinicai
-│  │        │        ├─ IdentityApplication.java
-│  │        │        └─ identity
-│  │        │           ├─ application
-│  │        │           │  ├─ port
-│  │        │           │  │  ├─ in
-│  │        │           │  │  │  ├─ LoginCommand.java
-│  │        │           │  │  │  ├─ LoginResult.java
-│  │        │           │  │  │  ├─ LoginUseCase.java
-│  │        │           │  │  │  ├─ RegisterUserCommand.java
-│  │        │           │  │  │  └─ RegisterUserUseCase.java
-│  │        │           │  │  └─ out
-│  │        │           │  │     ├─ TokenGenerator.java
-│  │        │           │  │     └─ UserRepository.java
-│  │        │           │  └─ service
-│  │        │           │     └─ IdentityService.java
-│  │        │           ├─ domain
-│  │        │           │  └─ model
-│  │        │           │     ├─ Role.java
-│  │        │           │     ├─ User.java
-│  │        │           │     └─ UserId.java
-│  │        │           └─ infrastructure
-│  │        │              ├─ adapter
-│  │        │              │  ├─ in
-│  │        │              │  │  └─ messaging
-│  │        │              │  │     └─ web
-│  │        │              │  │        └─ AuthController.java
-│  │        │              │  └─ out
-│  │        │              │     ├─ persistence
-│  │        │              │     |  ├─ mapper
-│  │        │              │     |  |  ├─ UserMapper.java
-│  │        │              │     |  |  └─ entity
-│  │        │              │     |  │     └─ UserEntity.java
-│  │        │              │     |  ├─ JpaInvoiceRepository.java
-│  │        │              │     |  └─ SpringInvoiceRepository.java
-│  │        │              │     └─ seccurity
-│  │        │              │        └─ JwtTokenGenerator.java
-│  │        │              └─ config
-│  │        │                 └─ SecurityConfig.java
-│  │        └─ resources
-│  │           └─ application.yml
-│  └─ target
-├─ notification-service
-│  ├─ pom.xml
-│  ├─ source
-│  │  └─ main
-│  │     └─ java
-│  │        ├─ com
-│  │        │  └─ dgw
-│  │        │     └─ clinicai
-│  │        │        ├─ NotificationApplication.java
-│  │        │        └─ notification
-│  │        │           ├─ application
-│  │        │           │  ├─ port
-│  │        │           │  │  ├─ in
-│  │        │           │  │  │  └─ SendNotificationUseCase.java
-│  │        │           │  │  └─ out
-│  │        │           │  │     └─ NotificationSender.java
-│  │        │           │  └─ service
-│  │        │           │     └─ NotificationService.java
-│  │        │           ├─ domain
-│  │        │           │  └─ model
-│  │        │           │     ├─ Notification.java
-│  │        │           │     └─ NotificationRequest.java
-│  │        │           └─ infrastructure
-│  │        │              ├─ adapter
-│  │        │              │  ├─ in
-│  │        │              │  │  └─ messaging
-│  │        │              │  │     ├─ BillingEventListener.java
-│  │        │              │  │     └─ dto
-│  │        │              │  │        └─ InvoiceIssuedEvent.java
-│  │        │              │  └─ out
-│  │        │              │     └─ email
-│  │        │              │        ├─ LoggingNotificationSender.java
-│  │        │              │        └─ SmtpNotificationSender.java
-│  │        │              └─ config
-│  │        │                 └─ KafkaConsumerConfig.java
-│  │        └─ resources
-│  │           └─ application.yml
-│  └─ target
-├─ docker-compose.yml
-├─ init-multiple-databases.sh
-├─ launch.json
-├─ patient-service
-│  ├─ pom.xml
-│  ├─ src
-│  │  └─ main
-│  │     ├─ java
-│  │     │  └─ com
-│  │     │     └─ dgw
-│  │     │        └─ clinicai
-│  │     │           └─ patient
-│  │     │              ├─ PatientApplication.java
-│  │     │              ├─ application
-│  │     │              │  ├─ port
-│  │     │              │  │  ├─ in
-│  │     │              │  │  │  ├─ RegisterNewPatientUseCase.java
-│  │     │              │  │  │  └─ RegisterPatientCommand.java
-│  │     │              │  │  └─ out
-│  │     │              │  │     └─ PatientRepository.java
-│  │     │              │  └─ service
-│  │     │              │     └─ PatientService.java
-│  │     │              ├─ domain
-│  │     │              │  └─ model
-│  │     │              │     ├─ Address.java
-│  │     │              │     ├─ ContactInfo.java
-│  │     │              │     ├─ Patient.java
-│  │     │              │     └─ PatientId.java
-│  │     │              └─ infrastructure
-│  │     │                 └─ adapter
-│  │     │                    ├─ in
-│  │     │                    │  └─ web
-│  │     │                    │     └─ PatientController.java
-│  │     │                    └─ out
-│  │     │                       └─ persistence
-│  │     │                          ├─ JpaPatientRepository.java
-│  │     │                          ├─ SpringPatientRepository.java
-│  │     │                          ├─ entity
-│  │     │                          │  ├─ AddressEmbeddable.java
-│  │     │                          │  ├─ ContactInfoEmbeddable.java
-│  │     │                          │  └─ PatientEntity.java
-│  │     │                          └─ mapper
-│  │     │                             └─ PatientMapper.java
-│  │     └─ resources
-│  │        └─ application.yml
-│  └─ target
-├─ pom.xml
-├─ scheduling-service
-│  ├─ pom.xml
-│  ├─ source
-│  │  └─ main
-│  │     └─ java
-│  │        ├─ com
-│  │        │  └─ dgw
-│  │        │     └─ clinicai
-│  │        │        └─ scheduling
-│  │        |           ├─ SchedulingApplication.java
-│  │        |           ├─ application
-│  │        |           │  ├─ port
-│  │        |           │  │  ├─ in
-│  │        |           │  │  │  ├─ CompleteAppointmentUseCase.java
-│  │        |           │  │  └─ out
-│  │        |           │  │     ├─ AppointmentRepository.java
-│  │        |           │  │     └─ EventPublisher.java
-│  │        |           │  └─ service
-│  │        |           │     └─ AppointmentService.java
-│  │        |           ├─ domain
-│  │        |           │  └─ model
-│  │        |           │     ├─ events
-│  │        |           │     |  ├─ Appointment.java
-│  │        |           │     |  ├─ AppointmentCompletedEvent.java
-│  │        |           │     |  └─ DomainEvent.java
-│  │        |           │     ├─ AppointmentId.java
-│  │        |           │     └─ AppointmentStatus.java
-│  │        |           └─ infrastructure
-│  │        |              └─ adapter
-│  │        |                 ├─ in
-│  │        |                 │  └─ web
-│  │        |                 │     ├─ AppointmentController.java
-│  │        |                 │     └─ CompleteAppointmentCommand.java
-│  │        |                 └─ out
-│  │        |                    ├─ persistence
-│  │        |                    |  ├─ JpaPatientRepository.java
-│  │        |                    |  ├─ SpringPatientRepository.java
-│  │        |                    |  ├─ entity
-│  │        │                    |  │  └─ AppointmentEntity.java
-│  │        |                    |  └─ mapper
-│  │        │                    |     └─ AppointmentMapper.java
-│  │        |                    └─ messaging
-│  │        |                       └─ KafkaEventPublisher.java
-│  │        └─ resources
-│  │           └─ application.yml
-│  └─ target
-└─ frontend-service
-   ├─ tsconfig.json
-   ├─ package.json
-   ├─ public
-   │  └─ index.html
-   └─ src
-      ├─ App.tsx
-      ├─ index.css
-      ├─ index.tsx
-      ├─ api
-      |  └─ api.ts
-      ├─ components
-      |  ├─ DashboardPage.tsx
-      |  ├─ LoginPage.tsx
-      |  ├─ PatientRegistrationPage.tsx
-      |  └─ PrivateRoute.tsx
-      └─ context
-         └─ AuthContext.tsx
-
-
+.
+├── .vscode/                # VS Code specific settings (e.g., launch configurations)
+├── api-gateway/            # Spring Cloud Gateway for routing and cross-cutting concerns
+├── billing-service/        # Microservice for handling billing and invoicing
+├── identity-service/       # Microservice for user authentication and authorization
+├── notification-service/   # Microservice for sending notifications (e.g., email, SMS)
+├── patient-service/        # Microservice for managing patient records
+├── scheduling-service/     # Microservice for managing appointments
+├── frontend-app/           # React + TypeScript frontend application
+├── frontend-angular-app/   # Angular frontend application
+├── .gitignore              # Specifies files and directories to be ignored by Git
+├── docker-compose.yml      # Defines and runs multi-container Docker applications (DBs, Kafka)
+├── pom.xml                 # Parent Maven Project Object Model for all backend services
+├── README.md               # Main project documentation with setup and architectural diagrams
+└── api-test-collection.json # Postman collection for API testing
 ```
 
+## Top-Level Components
+
+### Backend Services (`*-service/`, `api-gateway/`)
+
+The backend is a set of Spring Boot microservices managed by a parent Maven `pom.xml`.
+
+*   **`api-gateway`**: The single entry point for all frontend requests. It routes traffic to the appropriate downstream service and handles cross-cutting concerns like security (JWT validation) and rate limiting.
+*   **`identity-service`**: Manages user registration and authentication (login). It is responsible for creating and signing JSON Web Tokens (JWTs).
+*   **`patient-service`**: The Bounded Context for managing all patient-related data, such as demographics and contact information.
+*   **`scheduling-service`**: Handles the creation and management of appointments. It publishes events (e.g., `AppointmentCompletedEvent`) to Kafka.
+*   **`billing-service`**: Subscribes to events from Kafka to generate invoices and manage financial records.
+*   **`notification-service`**: Subscribes to events from Kafka to send notifications to users (e.g., appointment confirmations).
+
+### Frontend Applications
+
+The project contains two separate frontend applications to demonstrate flexibility in technology choices.
+
+*   **`frontend-app/`**: The primary user interface built with **React and TypeScript**. It includes a full authentication flow, protected routes, and API interaction via the `api-gateway`.
+*   **`frontend-angular-app/`**: An alternative user interface built with **Angular**. It mirrors the functionality of the React app, showcasing a different approach to state management and component architecture.
+
+### Root-Level Files
+
+*   **`pom.xml`**: The Maven parent POM. It manages shared dependencies, properties, and build configurations for all Java-based microservices, ensuring consistency.
+*   **`docker-compose.yml`**: Defines the project's infrastructure dependencies (PostgreSQL databases for each service, Apache Kafka). It allows for a one-command startup of all necessary backing services.
+*   **`README.md`**: The main entry point for project documentation. It contains setup instructions, an overview, and architectural diagrams.
+*   **`.gitignore`**: Ensures that build artifacts, IDE configuration, and other non-essential files are not committed to source control.
+*   **`api-test-collection.json`**: A ready-to-use Postman collection for easily testing all backend API endpoints through the gateway.
+*   **`.vscode/launch.json`**: A configuration file for Visual Studio Code that allows you to launch and debug all microservices simultaneously with a single command.
 

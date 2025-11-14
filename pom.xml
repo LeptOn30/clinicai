@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.0</version>
+        <version>3.5.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -20,9 +20,7 @@
     <description>Parent project for the Clinic Administration microservices</description>
 
     <properties>
-        <!-- Spring Boot 3.5 requires Java 17+; keep 17 unless you want to upgrade to 21 -->
         <java.version>17</java.version>
-        <!-- Explicit versions used by child modules -->
         <lombok.version>1.18.30</lombok.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
         <spring-cloud.version>2023.0.2</spring-cloud.version>
@@ -32,11 +30,11 @@
 
     <modules>
         <module>api-gateway</module>
+        <module>billing-service</module>
         <module>identity-service</module>
         <module>notification-service</module>
-        <module>scheduling-service</module>
-        <module>billing-service</module>
         <module>patient-service</module>
+        <module>scheduling-service</module>
         <!-- Add other services here as you create them -->
     </modules>
 
