@@ -216,8 +216,7 @@ This document provides a high-level overview of the entire project structure, ex
 ├── notification-service/   # Microservice for sending notifications (e.g., email, SMS)
 ├── patient-service/        # Microservice for managing patient records
 ├── scheduling-service/     # Microservice for managing appointments
-├── frontend-app/           # React + TypeScript frontend application
-├── frontend-angular-app/   # Angular frontend application
+├── frontend-app/           # Angular frontend application
 ├── .gitignore              # Specifies files and directories to be ignored by Git
 ├── docker-compose.yml      # Defines and runs multi-container Docker applications (DBs, Kafka)
 ├── pom.xml                 # Parent Maven Project Object Model for all backend services
@@ -240,10 +239,9 @@ The backend is a set of Spring Boot microservices managed by a parent Maven `pom
 
 ### Frontend Applications
 
-The project contains two separate frontend applications to demonstrate flexibility in technology choices.
+The project contains a Angular based frontend application.
 
-*   **`frontend-app/`**: The primary user interface built with **React and TypeScript**. It includes a full authentication flow, protected routes, and API interaction via the `api-gateway`.
-*   **`frontend-angular-app/`**: An alternative user interface built with **Angular**. It mirrors the functionality of the React app, showcasing a different approach to state management and component architecture.
+*   **`frontend-app/`**: The primary user interface with **Angular**. It mirrors the functionality of the replaced React app, showcasing a different approach to state management and component architecture.
 
 ### Root-Level Files
 
